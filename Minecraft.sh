@@ -5,6 +5,9 @@ Green="\033[32m"
 Red="\033[31m" 
 Yellow="\033[33m"
 Font="\033[0m"
+OK="${Green}[OK]${Font}"
+GreenBG="\033[42;37m"
+RedBG="\033[41;37m"
 Info="${Green}[信息]${Font}"
 Error="${Red}[错误]${Font}"
 Tip="${Green}[注意]${Font}"
@@ -55,9 +58,9 @@ Del_firewall(){
 File_download(){
     yum update -y
     yum install -y wget screen java-1.8.0 vim
-	wget https://github.com/tdk-kedion/Minecraft-Script/archive/v1.0.tar.gz
+	wget https://github.com/tdk-kedion/Minecraft-script/archive/v1.0.tar.gz
 	tar -xvf v1.0.tar.gz && rm -rf v1.0.tar.gz
-	mv Minecraft-Script-1.0 minecraft
+	mv Minecraft-script-1.0 minecraft
 	cd minecraft && chmod -R o+x *.sh
 	wget https://launcher.mojang.com/v1/objects/bb2b6b1aefcd70dfd1892149ac3a215f6c636b07/server.jar
 }
@@ -79,9 +82,10 @@ Minecraft_conf(){
 }
 
 Scheduled_tasks(){
+	clear
 	echo -e "----------------------------------------------------"
 	echo -e "每天几点进行数据备份"
-	echo -e "0-23"
+	echo -e "有效数字：0-23"
 	echo -e "----------------------------------------------------"
 	read -p "请输入：" date;
 	echo "*  ${date}  *  *  * root /${dir}/minecraft/backup.sh" >> /etc/crontab
@@ -101,12 +105,23 @@ start_up(){
 	fi
 	bash start.sh
 }
+Process_check(){
+	clear
+	if [[ `ps -ef | grep java |grep -v grep | wc -l` -ge 1 ]];then
+		echo -e "${OK} ${GreenBG} Minecraft已启动 ${Font}"
+	else
+		echo -e "${OK} ${RedBG} Minecraft未启动 ${Font}"
+		echo -e "请手动执行${Green}./start.sh${Font}"
+		exit 1
+	fi
+}
 
 check_root
 check_system
 File_download
 Minecraft_conf
+start_up
 Add_firewall
 Scheduled_tasks
-start_up
+Process_check
 cd ${dir} && rm -rf Minecraft.sh
