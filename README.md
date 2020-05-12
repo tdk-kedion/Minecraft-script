@@ -8,7 +8,7 @@
 使用方法
 
 ```sh
-yum update -y && yum install -y wget && wget https://cos.tdk.wiki/mc/Minecraft.sh && bash Minecraft.sh
+yum update -y && yum install -y wget && wget --no-check-certificate https://cos.tdk.wiki/mc/Minecraft.sh && bash Minecraft.sh
 ```
 
 进入Minecraft控制台
